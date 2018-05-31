@@ -1,0 +1,58 @@
+# JavaWeb
+package com.cookie.demo;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+public class Cookiedemo extends HttpServlet {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//获取网站访问时间
+		Date data=new Date();
+		
+		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		String myTime = format.format(data);
+		
+		System.out.println(myTime);
+		//创建Cookie对象
+		Cookie cookie=new Cookie("Time", myTime);
+		//设置Cookie的持久时间
+		cookie.setMaxAge(60*10);
+		//响应给客户端
+		response.addCookie(cookie);
+		
+		
+		
+		String value=null;
+		//获取上次访问时间
+		Cookie[] cookies = request.getCookies();
+		if(cookies!=null){
+			//循环取出
+			for(Cookie coo:cookies){
+				if("Time".equals(coo.getName())){
+					 value= coo.getValue();
+				}
+			}	
+		}
+		//解决乱码
+		response.setContentType("text/html;charset=UTF-8");
+		if(value==null){
+			response.getWriter().write("你是第一次访问！");
+		}else{
+			response.getWriter().write("你上一次访问的时间是"+value);
+		}
+		
+	
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
+
+}
